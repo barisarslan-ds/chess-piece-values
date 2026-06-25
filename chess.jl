@@ -7,8 +7,6 @@ struct Rook end
 struct Queen end
 struct Bishop end
 
-N = 5
-
 legal_moves(::King, r, c, N) = [(r+dr, c+dc) for dr in -1:1 for dc in -1:1 if (0 < r+dr <= N && 0 < c+dc <= N && !(dc == 0 && dr == 0))]
 legal_moves(::Knight, r, c, N) = [(r+dr, c+dc) for dr in (-2, -1, 1, 2) for dc in (-2, -1, 1, 2) if (0 < r+dr <= N && 0 < c+dc <= N && abs(dr) != abs(dc))]
 legal_moves(::Rook, r, c, N) = [(r+dr, c+dc) for dr in (-N+1):(N-1) for dc in (-N+1):(N-1) if (0 < r+dr <= N && 0 < c+dc <= N && !(dc == 0 && dr == 0) && ((dr == 0) || (dc == 0)))]
@@ -118,8 +116,8 @@ function build_matrix(N, trials)
     M = zeros(n, n)
     for i in 1:n, j in (i+1):n
         pct = run_matchup(pieces[i], pieces[j], N, trials)
-        M[i, j] = round(pct)
-        M[j, i] = round(100 - pct)
+        M[i, j] = pct
+        M[j, i] = 100 - pct
     end
     return M, names
 end
@@ -172,7 +170,7 @@ function calculate_piece_value_weighted(M, w)
                 denominator += w[j]
             end
         end
-        b[i] = round(numerator / denominator)
+        b[i] = numerator / denominator
     end
     return b
 end
@@ -198,7 +196,7 @@ function print_value_table(V, names, N_list)
     for i in 1:n_names
         print(rpad(names[i], 8))
         for k in 1:length(N_list)
-            print(lpad(Int(V[i, k]), 7))
+            print(lpad(round(Int, (V[i, k])), 7))
         end
         println()
     end
@@ -223,7 +221,6 @@ function sweep_with_error(N_list, trials, R)
             stds[i, k] = std(cell_values)
         end
     end
-
     names = ["Bishop", "King", "Queen", "Rook", "Knight"]
     return means, stds, names
 end
