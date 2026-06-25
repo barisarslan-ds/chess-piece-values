@@ -2,7 +2,7 @@ include("chess.jl")
 using Plots, Statistics
 
 N_list = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-means, stds, names = sweep_with_error(N_list, 100000, 10)
+means, stds = sweep_with_error(N_list, 100000, 10)
 
 styles = Dict(
     "Queen" => (color=RGB(0.20, 0.60, 0.40), style=:solid, width=3.0),
@@ -28,11 +28,11 @@ plt = plot(
 
 draw_order = ["Queen", "Rook", "Bishop", "King", "Knight"]
 for name in draw_order
-    i = findfirst(==(name), names)
+    i = findfirst(==(name), PIECE_NAMES)
     s = styles[name]
     plot!(plt, N_list, means[i, :],
-        ribbon=stds[i, :],        # ← hata bandı: her noktada ±std gölge
-        fillalpha=0.18,           # gölgenin saydamlığı
+        ribbon=stds[i, :],
+        fillalpha=0.18,
         label=name,
         color=s.color, linestyle=s.style, linewidth=s.width,
         marker=:circle, markersize=4, markerstrokewidth=0,
