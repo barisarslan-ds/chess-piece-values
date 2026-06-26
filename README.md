@@ -60,3 +60,4 @@ Full 4-30 sweep at high trial counts is ~1 hour. Reduce `trials`, `R`, or `N_lis
 ## Scope
 
 Toy model: no pawns, no armies, no strategy, single value metric. It measures isolated capture ability under random play. The result is the shape of value vs N, not the specific numbers.
+# chess-piece-values
