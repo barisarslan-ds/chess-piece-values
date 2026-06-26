@@ -1,7 +1,7 @@
 include("chess.jl")
 using Plots, Statistics
 
-N_list = collect(4:1:20)
+N_list = collect(4:1:30)
 trials = 100000
 R = 10
 
@@ -38,10 +38,10 @@ plt = plot(
     legend=:outerright,
     legendtitle="Piece",
     legendtitlefontsize=12,
-    xticks=4:2:20,
-    yticks=20:10:80,
-    xlims=(3.5, 20.5),
-    ylims=(15, 80),
+    xticks=4:2:N_list[end],
+    yticks=10:10:80,
+    xlims=(3.5, N_list[end] + 0.5),
+    ylims=(10, 80),
     left_margin=8Plots.mm,
     bottom_margin=8Plots.mm,
     right_margin=5Plots.mm,
@@ -84,4 +84,3 @@ end
 
 display(plt)
 savefig(plt, "piece_values.png")
-println("done — saved piece_values.png")
