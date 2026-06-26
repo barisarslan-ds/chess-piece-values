@@ -12,7 +12,7 @@ const PIECE_NAMES = ["Bishop", "King", "Queen", "Rook", "Knight"]
 
 legal_moves(::King, r, c, N) = [(r+dr, c+dc) for dr in -1:1 for dc in -1:1 if (0 < r+dr <= N && 0 < c+dc <= N && !(dr == 0 && dc == 0))]
 legal_moves(::Knight, r, c, N) = [(r+dr, c+dc) for dr in (-2, -1, 1, 2) for dc in (-2, -1, 1, 2) if (0 < r+dr <= N && 0 < c+dc <= N && abs(dr) != abs(dc))]
-legal_moves(::Rook, r, c, N) = [(r+dr, c+dc) for dr in (-N+1):(N-1) for dc in (-N+1):(N-1) if (0 < r+dr <= N && 0 < c+dc <= N && !(dr == 0 && dc == 0) && (dr == 0 || dc == 0))]
+legal_moves(::Rook, r, c, N) = [[(r, j) for j in 1:N if j != c]; [(i, c) for i in 1:N if i != r]]
 legal_moves(::Bishop, r, c, N) = [(r+dr, c+dc) for dr in (-N+1):(N-1) for dc in (-N+1):(N-1) if (0 < r+dr <= N && 0 < c+dc <= N && !(dr == 0 && dc == 0) && abs(dr) == abs(dc))]
 legal_moves(::Queen, r, c, N) = [legal_moves(Rook(), r, c, N); legal_moves(Bishop(), r, c, N)]
 
@@ -49,6 +49,23 @@ function duel(typeA, typeB, N)
             return active[1]
         end
         nr, nc = rand(moves)
+        active = (active[1], nr, nc)
+        active, target = target, active
+    end
+end
+
+function duel_length(typeA, typeB, N)
+    (r1, c1), (r2, c2) = random_start(N)
+    active, target = shuffle([(typeA, r1, c1), (typeB, r2, c2)])
+    moves = 0
+    while true
+        legal = legal_moves(active[1], active[2], active[3], N)
+        target_pos = (target[2], target[3])
+        moves += 1
+        if target_pos in legal
+            return moves
+        end
+        nr, nc = rand(legal)
         active = (active[1], nr, nc)
         active, target = target, active
     end
@@ -142,3 +159,5 @@ function sweep_with_error(N_list, trials, R)
     stds = dropdims(std(runs, dims=3), dims=3)
     return means, stds
 end
+
+
