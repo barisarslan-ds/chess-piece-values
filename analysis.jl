@@ -2,7 +2,7 @@ include("chess.jl")
 using Plots, Statistics
 
 N_list = collect(4:1:20)
-trials = 100_000
+trials = 100000
 R = 10
 
 means, stds = sweep_with_error(N_list, trials, R)
